@@ -1,8 +1,8 @@
 import styles from "./Button.module.css";
 
-function Button({ title, onClick, disabled, id }) {
+function Button({ title, onClick, disabled, page, id }) {
   return (
-    <button   id={id} data-testid="button-component" className={styles.button} onClick = {onClick}>
+    <button  disabled = {page===1 && id === "PREV"} id={id} data-testid="button-component" className={styles.button} onClick = {onClick}>
       {title}
     </button>
   );

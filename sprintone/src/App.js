@@ -6,40 +6,52 @@ import axios from 'axios'
 export default function App() {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
-  // const [order]
+  const [order ,setOrder] = useState("ASC");
+  const [orderTitle, setOrderTitle] = useState("Sort by Descending Salary");
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-      // axios.get('https://json-server-mocker-masai.herokuapp.com/candidates',{
-      axios.get('http://localhost:3001/candidates',{
+    setLoading(true)
+      axios.get('https://json-server-mocker-masai.herokuapp.com/candidates',{
+      // axios.get('http://localhost:3001/candidates',{
         params:{
           _limit:5,
           _page:page,
           _sort:"salary",
-          _order:"ASC"
+          _order:order
         }
       }).then((res)=>{
-      setData(res.data)
+        setData(res.data);
+        setLoading(false)
       })
 
-  }, [page])
+  }, [page,order])
   
-  const nextPage = () =>{
-    setPage(page+1)
+  const handlePage = (a) =>{
+    setPage(page+a)
   }
 
-  const prevPage = () =>{
-    setPage(page-1)
+
+  const handleOrder = () =>{
+      if(order === "ASC"){
+        setOrder("DESC");
+        setOrderTitle("Sort by Ascending Salary")
+      }else{
+        setOrder("ASC");
+        setOrderTitle("Sort by Descending Salary")
+      }
   }
 
   return (
     <div className="App">
       <div>
-        <div id="loading-container">...Loading</div>
+        {
+          loading ? <div id="loading-container">...Loading</div> : null
+        }
 
-        <Button id="SORT_BUTTON" title={`Sort by Ascending Salary`} />
-        <Button title="PREV" id="PREV"  onClick={prevPage}/>
-        <Button id="NEXT" title="NEXT" onClick={nextPage}/>
-        {/* <button onClick={nextPage}>next</button> */}
+        <Button id="SORT_BUTTON" title={orderTitle} onClick={handleOrder}/>
+        <Button title="PREV" id="PREV" page={page} onClick={()=>handlePage(-1)}/>
+        <Button id="NEXT" title="NEXT"  page={page} onClick={()=>handlePage(1)}/>
       </div>
       {
           data.map((item ,ind)=>{
